@@ -47,7 +47,7 @@
       <bpmn:incoming>Flow_18cd873</bpmn:incoming>
       <bpmn:outgoing>Flow_1tntr8q</bpmn:outgoing>
       <bpmn:exclusiveGateway id="SubProcess_DeliveryType_Gateway" default="Flow_1eun8aj">
-        <bpmn:incoming>Flow_01us385</bpmn:incoming>
+        <bpmn:incoming>Flow_00muz7y</bpmn:incoming>
         <bpmn:outgoing>Flow_09er445</bpmn:outgoing>
         <bpmn:outgoing>Flow_1eun8aj</bpmn:outgoing>
       </bpmn:exclusiveGateway>
@@ -93,31 +93,14 @@
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_1m6b4af" sourceRef="JD_DeliverCompleted" targetRef="SubProcess_DeliverySystem_End" />
       <bpmn:startEvent id="SubProcess_DeliverySystem_Start">
-        <bpmn:outgoing>Flow_1jv3uxf</bpmn:outgoing>
+        <bpmn:outgoing>Flow_00muz7y</bpmn:outgoing>
       </bpmn:startEvent>
-      <bpmn:sequenceFlow id="Flow_1jv3uxf" sourceRef="SubProcess_DeliverySystem_Start" targetRef="Gateway_0la7ah3" />
       <bpmn:exclusiveGateway id="SubProcess_DeliveryType_Gateway_Merge">
         <bpmn:incoming>Flow_1sjks93</bpmn:incoming>
         <bpmn:incoming>Flow_1hi4gdz</bpmn:incoming>
         <bpmn:outgoing>Flow_0n51lrs</bpmn:outgoing>
       </bpmn:exclusiveGateway>
-      <bpmn:exclusiveGateway id="Gateway_0la7ah3" default="Flow_13kzx97">
-        <bpmn:incoming>Flow_1jv3uxf</bpmn:incoming>
-        <bpmn:outgoing>Flow_01us385</bpmn:outgoing>
-        <bpmn:outgoing>Flow_13kzx97</bpmn:outgoing>
-      </bpmn:exclusiveGateway>
-      <bpmn:sequenceFlow id="Flow_01us385" sourceRef="Gateway_0la7ah3" targetRef="SubProcess_DeliveryType_Gateway">
-        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="groovy">def flag= false;
-if(execution.hasVariable("deliveryType")){
-  flag = true;
-}
-flag;</bpmn:conditionExpression>
-      </bpmn:sequenceFlow>
-      <bpmn:sequenceFlow id="Flow_13kzx97" sourceRef="Gateway_0la7ah3" targetRef="Event_1z0vngh" />
-      <bpmn:endEvent id="Event_1z0vngh">
-        <bpmn:incoming>Flow_13kzx97</bpmn:incoming>
-        <bpmn:errorEventDefinition id="ErrorEventDefinition_1hd7p1w" errorRef="Error_1bv95s8" />
-      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_00muz7y" sourceRef="SubProcess_DeliverySystem_Start" targetRef="SubProcess_DeliveryType_Gateway" />
     </bpmn:subProcess>
     <bpmn:sequenceFlow id="Flow_1tntr8q" sourceRef="SubProcess_DeliverySystem" targetRef="UT_DummyUserTask" />
     <bpmn:boundaryEvent id="SubProcess_DeliverySystem_Error" attachedToRef="SubProcess_DeliverySystem">
@@ -263,11 +246,10 @@ flag;</bpmn:conditionExpression>
       </bpmn:callActivity>
       <bpmn:sequenceFlow id="Flow_0aydxxe" sourceRef="MultiInstance_Side_CallActivity" targetRef="JD_ConfirmCompletedSide" />
     </bpmn:subProcess>
-    <bpmn:sequenceFlow id="Flow_0tmjk63" sourceRef="ParallelGateway_ToSignalAndValidation" targetRef="Activity_0brhb6j" />
     <bpmn:parallelGateway id="ParallelGateway_ToSignalAndValidation">
       <bpmn:incoming>Flow_0xln4hv</bpmn:incoming>
-      <bpmn:outgoing>Flow_0tmjk63</bpmn:outgoing>
       <bpmn:outgoing>Flow_0kyli9b</bpmn:outgoing>
+      <bpmn:outgoing>Flow_18hyk3g</bpmn:outgoing>
     </bpmn:parallelGateway>
     <bpmn:sequenceFlow id="Flow_1gpsrei" sourceRef="JD_pizza-validation" targetRef="MultiInstance_Pizza" />
     <bpmn:sequenceFlow id="Flow_0wtbaa7" sourceRef="MultiInstance_Pizza" targetRef="InclusiveGateway_AfterValidation" />
@@ -469,6 +451,7 @@ if(execution.hasVariable("drinksListObj")){
     </bpmn:subProcess>
     <bpmn:sequenceFlow id="Flow_0kyli9b" sourceRef="ParallelGateway_ToSignalAndValidation" targetRef="JD_EnrichCustomerPhoneCall" />
     <bpmn:parallelGateway id="InclusiveGateway_BeforeValidation">
+      <bpmn:incoming>Flow_18hyk3g</bpmn:incoming>
       <bpmn:outgoing>Flow_19yh0vy</bpmn:outgoing>
       <bpmn:outgoing>Flow_0ijnqt2</bpmn:outgoing>
       <bpmn:outgoing>Flow_0st7e5c</bpmn:outgoing>
@@ -488,14 +471,7 @@ if(execution.hasVariable("drinksListObj")){
       <bpmn:outgoing>Flow_18cd873</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_18cd873" sourceRef="Gateway_1dq34ww" targetRef="SubProcess_DeliverySystem" />
-    <bpmn:endEvent id="Event_1ur67x6">
-      <bpmn:incoming>Flow_12ecif3</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_12ecif3" sourceRef="Activity_0brhb6j" targetRef="Event_1ur67x6" />
-    <bpmn:userTask id="Activity_0brhb6j">
-      <bpmn:incoming>Flow_0tmjk63</bpmn:incoming>
-      <bpmn:outgoing>Flow_12ecif3</bpmn:outgoing>
-    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_18hyk3g" sourceRef="ParallelGateway_ToSignalAndValidation" targetRef="InclusiveGateway_BeforeValidation" />
     <bpmn:textAnnotation id="TextAnnotation_0isqirg">
       <bpmn:text>Create an API which can publish a message Pick 
 1) Combo menu
@@ -519,7 +495,7 @@ if(execution.hasVariable("drinksListObj")){
   <bpmn:message id="Message_1m51tbu" name="Message_Order" />
   <bpmn:message id="Message_2gdbm7j" name="Message_PizzaCreation">
     <bpmn:extensionElements>
-      <zeebe:subscription />
+      <zeebe:subscription correlationKey="=bKey" />
     </bpmn:extensionElements>
   </bpmn:message>
   <bpmn:message id="Message_1gdq6gi" name="Message_PizzaStatus">
@@ -529,7 +505,7 @@ if(execution.hasVariable("drinksListObj")){
   </bpmn:message>
   <bpmn:message id="Message_26kvuk1" name="Message_MakePayment">
     <bpmn:extensionElements>
-      <zeebe:subscription />
+      <zeebe:subscription correlationKey="=bKey" />
     </bpmn:extensionElements>
   </bpmn:message>
   <bpmn:signal id="Signal_2fhgs7i" name="Signal_CustomerEnrich" />
@@ -549,18 +525,6 @@ if(execution.hasVariable("drinksListObj")){
   <bpmn:error id="Error_1bv95s8" name="NoDeliveryType" errorCode="NoDeliveryType" camunda:errorMessage="NoDeliveryType" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="PizzaOrderingSystem">
-      <bpmndi:BPMNShape id="TextAnnotation_0shlnlg_di" bpmnElement="TextAnnotation_0shlnlg">
-        <dc:Bounds x="1015" y="80" width="210" height="50" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1utptcc_di" bpmnElement="TextAnnotation_1utptcc">
-        <dc:Bounds x="1500" y="1175" width="100" height="84" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1gfqr1u_di" bpmnElement="TextAnnotation_1gfqr1u">
-        <dc:Bounds x="2970" y="1150" width="220" height="82" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_18cd873_di" bpmnElement="Flow_18cd873">
         <di:waypoint x="3765" y="456" />
         <di:waypoint x="3900" y="456" />
@@ -630,10 +594,6 @@ if(execution.hasVariable("drinksListObj")){
         <di:waypoint x="1110" y="218" />
         <di:waypoint x="1170" y="218" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0tmjk63_di" bpmnElement="Flow_0tmjk63">
-        <di:waypoint x="325" y="450" />
-        <di:waypoint x="400" y="450" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0st7e5c_di" bpmnElement="Flow_0st7e5c">
         <di:waypoint x="910" y="425" />
         <di:waypoint x="910" y="218" />
@@ -686,29 +646,15 @@ if(execution.hasVariable("drinksListObj")){
         <di:waypoint x="935" y="450" />
         <di:waypoint x="1010" y="450" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_12ecif3_di" bpmnElement="Flow_12ecif3">
-        <di:waypoint x="500" y="450" />
-        <di:waypoint x="582" y="450" />
+      <bpmndi:BPMNEdge id="Flow_18hyk3g_di" bpmnElement="Flow_18hyk3g">
+        <di:waypoint x="325" y="450" />
+        <di:waypoint x="885" y="450" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_06gjiw0_di" bpmnElement="received-order">
         <dc:Bounds x="202" y="432" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="179" y="475" width="85" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0an41av_di" bpmnElement="SignalRecievedEnd">
-        <dc:Bounds x="282" y="674" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1h7x5bc_di" bpmnElement="JD_EnrichCustomerPhoneCall">
-        <dc:Bounds x="250" y="530" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0xq55g8_di" bpmnElement="ParallelGateway_ToSignalAndValidation">
-        <dc:Bounds x="275" y="425" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0isqirg_di" bpmnElement="TextAnnotation_0isqirg">
-        <dc:Bounds x="185" y="200" width="170" height="120" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0zxkfnx_di" bpmnElement="JD_side-validation">
         <dc:Bounds x="1010" y="410" width="100" height="80" />
@@ -722,85 +668,16 @@ if(execution.hasVariable("drinksListObj")){
       <bpmndi:BPMNShape id="Event_1vo0gkk_di" bpmnElement="OrderCompleted">
         <dc:Bounds x="5142" y="422" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1t3wi8a_di" bpmnElement="SubProcess_DeliverySystem_ErrorEND">
-        <dc:Bounds x="4462" y="682" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_0an41av_di" bpmnElement="SignalRecievedEnd">
+        <dc:Bounds x="282" y="674" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0pab3yg_di" bpmnElement="JD_ErrorLog">
-        <dc:Bounds x="4310" y="660" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1h7x5bc_di" bpmnElement="JD_EnrichCustomerPhoneCall">
+        <dc:Bounds x="250" y="530" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0c4acj6_di" bpmnElement="JD_CashPayment">
-        <dc:Bounds x="3508" y="523" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_092d6bo_di" bpmnElement="EventBasedGateway_WaitForPayment">
-        <dc:Bounds x="3274" y="431" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_057ou8n_di" bpmnElement="MessageEvent_RecievePayment">
-        <dc:Bounds x="3461" y="438" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1ffphf4_di" bpmnElement="Timer_WaitingForPayment">
-        <dc:Bounds x="3380" y="545" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1oxg81b_di" bpmnElement="JD_pizza-validation">
-        <dc:Bounds x="1010" y="178" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0abhlx6_di" bpmnElement="JD_findTotal">
-        <dc:Bounds x="2939" y="416" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_16wzp3m_di" bpmnElement="JD_CombineToOnelist">
-        <dc:Bounds x="1950" y="410" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0po1jaa_di" bpmnElement="MultiInstance_Pizza_Error">
-        <dc:Bounds x="1632" y="42" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0eque4b_di" bpmnElement="MultiInstance_Side_Error">
-        <dc:Bounds x="1622" y="592" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0b43th0_di" bpmnElement="UT_DummyUserTask">
-        <dc:Bounds x="4990" y="400" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0sooagi_di" bpmnElement="InclusiveGateway_BeforeValidation">
-        <dc:Bounds x="885" y="425" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0jgj1hs_di" bpmnElement="InclusiveGateway_AfterValidation">
-        <dc:Bounds x="1825" y="425" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_168oug3_di" bpmnElement="Gateway_1dq34ww" isMarkerVisible="true">
-        <dc:Bounds x="3715" y="431" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1ur67x6_di" bpmnElement="Event_1ur67x6">
-        <dc:Bounds x="582" y="432" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0wzxahr_di" bpmnElement="Activity_0brhb6j">
-        <dc:Bounds x="400" y="410" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_1qlzuzs_di" bpmnElement="Association_1qlzuzs">
-        <di:waypoint x="220" y="432" />
-        <di:waypoint x="223" y="320" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_04g2iuk_di" bpmnElement="Association_04g2iuk">
-        <di:waypoint x="1060" y="178" />
-        <di:waypoint x="1061" y="130" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_0g4xxmh_di" bpmnElement="SubProcess_DeliverySystem" isExpanded="true">
         <dc:Bounds x="3900" y="260" width="990" height="350" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_13kzx97_di" bpmnElement="Flow_13kzx97">
-        <di:waypoint x="4040" y="415" />
-        <di:waypoint x="4040" y="378" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_01us385_di" bpmnElement="Flow_01us385">
-        <di:waypoint x="4065" y="440" />
-        <di:waypoint x="4135" y="440" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1jv3uxf_di" bpmnElement="Flow_1jv3uxf">
-        <di:waypoint x="3968" y="440" />
-        <di:waypoint x="4015" y="440" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1m6b4af_di" bpmnElement="Flow_1m6b4af">
         <di:waypoint x="4700" y="440" />
         <di:waypoint x="4792" y="440" />
@@ -829,6 +706,10 @@ if(execution.hasVariable("drinksListObj")){
         <di:waypoint x="4160" y="340" />
         <di:waypoint x="4250" y="340" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00muz7y_di" bpmnElement="Flow_00muz7y">
+        <di:waypoint x="3968" y="440" />
+        <di:waypoint x="4135" y="440" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Gateway_0y0d2yq_di" bpmnElement="SubProcess_DeliveryType_Gateway" isMarkerVisible="true">
         <dc:Bounds x="4135" y="415" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -851,11 +732,29 @@ if(execution.hasVariable("drinksListObj")){
       <bpmndi:BPMNShape id="Gateway_16ra082_di" bpmnElement="SubProcess_DeliveryType_Gateway_Merge" isMarkerVisible="true">
         <dc:Bounds x="4435" y="415" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0la7ah3_di" bpmnElement="Gateway_0la7ah3" isMarkerVisible="true">
-        <dc:Bounds x="4015" y="415" width="50" height="50" />
+      <bpmndi:BPMNShape id="Event_1t3wi8a_di" bpmnElement="SubProcess_DeliverySystem_ErrorEND">
+        <dc:Bounds x="4462" y="682" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_18p4a0b_di" bpmnElement="Event_1z0vngh">
-        <dc:Bounds x="4022" y="342" width="36" height="36" />
+      <bpmndi:BPMNShape id="Activity_0pab3yg_di" bpmnElement="JD_ErrorLog">
+        <dc:Bounds x="4310" y="660" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0c4acj6_di" bpmnElement="JD_CashPayment">
+        <dc:Bounds x="3508" y="523" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_092d6bo_di" bpmnElement="EventBasedGateway_WaitForPayment">
+        <dc:Bounds x="3274" y="431" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_057ou8n_di" bpmnElement="MessageEvent_RecievePayment">
+        <dc:Bounds x="3461" y="438" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ffphf4_di" bpmnElement="Timer_WaitingForPayment">
+        <dc:Bounds x="3380" y="545" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1oxg81b_di" bpmnElement="JD_pizza-validation">
+        <dc:Bounds x="1010" y="178" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1mpwvd1" bpmnElement="MultiInstance_Pizza" isExpanded="true">
         <dc:Bounds x="1170" y="140" width="568" height="180" />
@@ -920,6 +819,13 @@ if(execution.hasVariable("drinksListObj")){
       <bpmndi:BPMNShape id="Activity_1fdknyj_di" bpmnElement="MultiInstance_Side_CallActivity">
         <dc:Bounds x="1310" y="405" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0xq55g8_di" bpmnElement="ParallelGateway_ToSignalAndValidation">
+        <dc:Bounds x="275" y="425" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0abhlx6_di" bpmnElement="JD_findTotal">
+        <dc:Bounds x="2939" y="416" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0pvkp9n" bpmnElement="Activity_1puo3aw" isExpanded="true">
         <dc:Bounds x="2380" y="1110" width="500" height="200" />
         <bpmndi:BPMNLabel />
@@ -944,10 +850,6 @@ if(execution.hasVariable("drinksListObj")){
       <bpmndi:BPMNShape id="Event_0mpv0of_di" bpmnElement="Event_1ugmxor">
         <dc:Bounds x="2772" y="1192" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_11oinfu_di" bpmnElement="Association_11oinfu">
-        <di:waypoint x="2880" y="1182" />
-        <di:waypoint x="2970" y="1172" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_15t8drm" bpmnElement="Activity_16848ox" isExpanded="true">
         <dc:Bounds x="860" y="1110" width="500" height="210" />
         <bpmndi:BPMNLabel />
@@ -973,10 +875,6 @@ if(execution.hasVariable("drinksListObj")){
       <bpmndi:BPMNShape id="Event_1leepul_di" bpmnElement="Event_00pp3ra">
         <dc:Bounds x="1222" y="1192" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_0i4yyyl_di" bpmnElement="Association_0i4yyyl">
-        <di:waypoint x="1360" y="1200" />
-        <di:waypoint x="1500" y="1193" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_1oe2zk4_di" bpmnElement="MultiInstance_CalculatePrice" isExpanded="true">
         <dc:Bounds x="2170" y="350" width="640" height="200" />
         <bpmndi:BPMNLabel />
@@ -1005,6 +903,19 @@ if(execution.hasVariable("drinksListObj")){
       <bpmndi:BPMNShape id="Activity_0t74r0a_di" bpmnElement="JD_AddPrice">
         <dc:Bounds x="2530" y="410" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_16wzp3m_di" bpmnElement="JD_CombineToOnelist">
+        <dc:Bounds x="1950" y="410" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0po1jaa_di" bpmnElement="MultiInstance_Pizza_Error">
+        <dc:Bounds x="1632" y="42" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0eque4b_di" bpmnElement="MultiInstance_Side_Error">
+        <dc:Bounds x="1622" y="592" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0b43th0_di" bpmnElement="UT_DummyUserTask">
+        <dc:Bounds x="4990" y="400" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_01l54y0_di" bpmnElement="MultiInstance_Drinks" isExpanded="true">
         <dc:Bounds x="1160" y="670" width="550" height="240" />
@@ -1071,6 +982,31 @@ if(execution.hasVariable("drinksListObj")){
           <dc:Bounds x="1789" y="1242" width="78" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0sooagi_di" bpmnElement="InclusiveGateway_BeforeValidation">
+        <dc:Bounds x="885" y="425" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0jgj1hs_di" bpmnElement="InclusiveGateway_AfterValidation">
+        <dc:Bounds x="1825" y="425" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_168oug3_di" bpmnElement="Gateway_1dq34ww" isMarkerVisible="true">
+        <dc:Bounds x="3715" y="431" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0isqirg_di" bpmnElement="TextAnnotation_0isqirg">
+        <dc:Bounds x="185" y="200" width="170" height="120" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0shlnlg_di" bpmnElement="TextAnnotation_0shlnlg">
+        <dc:Bounds x="1015" y="80" width="210" height="50" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1utptcc_di" bpmnElement="TextAnnotation_1utptcc">
+        <dc:Bounds x="1500" y="1175" width="100" height="84" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1gfqr1u_di" bpmnElement="TextAnnotation_1gfqr1u">
+        <dc:Bounds x="2970" y="1150" width="220" height="82" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0njo0rs_di" bpmnElement="MultiInstance_Side_TimerBoundaryEvent">
         <dc:Bounds x="1532" y="542" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -1080,6 +1016,22 @@ if(execution.hasVariable("drinksListObj")){
       <bpmndi:BPMNShape id="Event_0vhtlnw_di" bpmnElement="SubProcess_DeliverySystem_Error">
         <dc:Bounds x="4157" y="592" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1qlzuzs_di" bpmnElement="Association_1qlzuzs">
+        <di:waypoint x="220" y="432" />
+        <di:waypoint x="223" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_04g2iuk_di" bpmnElement="Association_04g2iuk">
+        <di:waypoint x="1060" y="178" />
+        <di:waypoint x="1061" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0i4yyyl_di" bpmnElement="Association_0i4yyyl">
+        <di:waypoint x="1360" y="1200" />
+        <di:waypoint x="1500" y="1193" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_11oinfu_di" bpmnElement="Association_11oinfu">
+        <di:waypoint x="2880" y="1182" />
+        <di:waypoint x="2970" y="1172" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

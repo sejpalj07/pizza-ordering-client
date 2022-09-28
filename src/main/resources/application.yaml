@@ -1,11 +1,17 @@
-#camunda.bpm.admin-user:
-#  id: hari
-#  password: hari5679
 #logging:
 #  level:
 #    root: debug
+#  zeebe.client.cloud.region=dsm-1
+#  zeebe.client.cloud.clusterId=58611eda-e42f-443e-b647-8faac517b634
+#  zeebe.client.cloud.clientId=J..mFmF~Nb~ENAPFtWhAcrwzeRGNF6hp
+#  zeebe.client.cloud.clientSecret=Gghv7~Xvu3cYFmgBHuGfr_MwR3QOYWZfG5R7FS0e47fPeG.gm8MFl1F-zJjmWivt
 
-zeebe.client.cloud.region=dsm-1
-zeebe.client.cloud.clusterId=58611eda-e42f-443e-b647-8faac517b634
-zeebe.client.cloud.clientId=J..mFmF~Nb~ENAPFtWhAcrwzeRGNF6hp
-zeebe.client.cloud.clientSecret=Gghv7~Xvu3cYFmgBHuGfr_MwR3QOYWZfG5R7FS0e47fPeG.gm8MFl1F-zJjmWivt
+zeebe:
+  client:
+    cloud:
+      region: dsm-1
+      cluster-id: 58611eda-e42f-443e-b647-8faac517b634
+      client-id: J..mFmF~Nb~ENAPFtWhAcrwzeRGNF6hp
+      client-secret: Gghv7~Xvu3cYFmgBHuGfr_MwR3QOYWZfG5R7FS0e47fPeG.gm8MFl1F-zJjmWivt
+
+

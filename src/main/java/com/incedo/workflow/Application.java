@@ -13,14 +13,8 @@ import org.springframework.context.annotation.Import;
 @ZeebeDeployment(resources = "classpath:*.bpmn")
 @SpringBootApplication
 public class Application {
-
     public static void main(String... args) {
         SpringApplication.run(Application.class, args);
-//        ZeebeClient zeebeClient = context.getBean(ZeebeClient.class);
-//        zeebeClient.newCreateInstanceCommand()
-//                .bpmnProcessId("")
-//                .latestVersion()
-//                .variables(Variables.createVariables().putValue("","")).send().join();
     }
 
 
