@@ -7,16 +7,9 @@
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1bptf9f" sourceRef="Message_Catch_Start_Events" targetRef="Activity_1kiev9u" />
     <bpmn:sequenceFlow id="Flow_00b0az8" sourceRef="Activity_1kiev9u" targetRef="Event_timer_pizza" />
-    <bpmn:endEvent id="PizzaStatusFromBackHousee" camunda:asyncBefore="true">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="Message_Status_BackHouse" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0hnochg</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_010a93w" messageRef="Message_03msg7e" camunda:delegateExpression="${PizzaStatusDelegate}" />
-    </bpmn:endEvent>
     <bpmn:serviceTask id="Activity_1kiev9u" name="make Pizza">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="camunda-7-adapter" />
+        <zeebe:taskDefinition type="ConfirmPizza" />
         <zeebe:taskHeaders>
           <zeebe:header key="delegateExpression" value="${PizzaDelegate}" />
         </zeebe:taskHeaders>
@@ -26,21 +19,24 @@
     </bpmn:serviceTask>
     <bpmn:intermediateCatchEvent id="Event_timer_pizza">
       <bpmn:incoming>Flow_00b0az8</bpmn:incoming>
-      <bpmn:outgoing>Flow_0hnochg</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0yjdmcf</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1uknod5">
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT15S</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
-    <bpmn:sequenceFlow id="Flow_0hnochg" sourceRef="Event_timer_pizza" targetRef="PizzaStatusFromBackHousee" />
+    <bpmn:sequenceFlow id="Flow_0yjdmcf" sourceRef="Event_timer_pizza" targetRef="send_message_from_backhouse" />
+    <bpmn:endEvent id="send_message_from_backhouse">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="BackHouse_Status" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0yjdmcf</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1ilo160" />
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmn:message id="Message_3j2dqrd" name="Message_PizzaCreation" />
   <bpmn:message id="Message_03msg7e" name="PizzaStatusMessage" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="PizzaChef">
-      <bpmndi:BPMNEdge id="Flow_0hnochg_di" bpmnElement="Flow_0hnochg">
-        <di:waypoint x="548" y="117" />
-        <di:waypoint x="662" y="117" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_00b0az8_di" bpmnElement="Flow_00b0az8">
         <di:waypoint x="410" y="117" />
         <di:waypoint x="512" y="117" />
@@ -49,11 +45,12 @@
         <di:waypoint x="215" y="117" />
         <di:waypoint x="310" y="117" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yjdmcf_di" bpmnElement="Flow_0yjdmcf">
+        <di:waypoint x="548" y="117" />
+        <di:waypoint x="652" y="117" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0j5anoa_di" bpmnElement="Message_Catch_Start_Events">
         <dc:Bounds x="179" y="99" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1xw2fbo_di" bpmnElement="PizzaStatusFromBackHousee">
-        <dc:Bounds x="662" y="99" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_09wwoo9_di" bpmnElement="Activity_1kiev9u">
         <dc:Bounds x="310" y="77" width="100" height="80" />
@@ -61,6 +58,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1m805qh_di" bpmnElement="Event_timer_pizza">
         <dc:Bounds x="512" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1gjgn33_di" bpmnElement="send_message_from_backhouse">
+        <dc:Bounds x="652" y="99" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

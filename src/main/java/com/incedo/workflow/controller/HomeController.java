@@ -1,6 +1,7 @@
 package com.incedo.workflow.controller;
 
 import com.incedo.workflow.model.Order;
+import com.incedo.workflow.model.Pizza;
 import io.camunda.zeebe.spring.client.ZeebeClientLifecycle;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -44,6 +46,7 @@ public class HomeController {
         client.newPublishMessageCommand()
                 .messageName("Message_Order")
                 .correlationKey(bKey)
+                .variables(orderMap)
                 .send()
                 .join();
 
