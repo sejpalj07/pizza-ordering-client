@@ -10,6 +10,6 @@ import org.springframework.stereotype.Component;
 public class CheckPizzaStatusFromKitchen implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) throws Exception {
-        log.info(">>CheckPizzaStatusFromKitchen");
+        log.info(" This is a Camunda 7 Delegate for CheckPizzaStatusFromKitchen");
     }
 }

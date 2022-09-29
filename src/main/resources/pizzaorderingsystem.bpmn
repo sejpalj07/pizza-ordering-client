@@ -5,16 +5,12 @@
       <bpmn:outgoing>Flow_14wiw94</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1usqn5a" messageRef="Message_1m51tbu" />
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_19yh0vy" sourceRef="InclusiveGateway_BeforeValidation" targetRef="Activity_0yozk34" />
-    <bpmn:sequenceFlow id="Flow_0ijnqt2" sourceRef="InclusiveGateway_BeforeValidation" targetRef="Activity_00q74xq" />
+    <bpmn:sequenceFlow id="Flow_19yh0vy" sourceRef="InclusiveGateway_BeforeValidation" targetRef="JD_side-validation" />
     <bpmn:serviceTask id="JD_side-validation" name="side validation" camunda:asyncBefore="true">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="camunda-7-adapter" />
-        <zeebe:taskHeaders>
-          <zeebe:header key="delegateExpression" value="${ValidateSideDelegate}" />
-        </zeebe:taskHeaders>
+        <zeebe:taskDefinition type="SideValidation" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0lsyvk0</bpmn:incoming>
+      <bpmn:incoming>Flow_19yh0vy</bpmn:incoming>
       <bpmn:outgoing>Flow_04d64ok</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:intermediateThrowEvent id="MessageThrow_payment-system" name="payment-system">
@@ -157,7 +153,6 @@
           <zeebe:loopCharacteristics inputCollection="=pizzaList" inputElement="inputPizza" outputCollection="results" outputElement="=result" />
         </bpmn:extensionElements>
         <bpmn:loopCardinality xsi:type="bpmn:tFormalExpression">${pizzaList.size()}</bpmn:loopCardinality>
-        <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">=pizzaList.size()</bpmn:completionCondition>
       </bpmn:multiInstanceLoopCharacteristics>
       <bpmn:startEvent id="MultiInstance_Pizza_Start">
         <bpmn:outgoing>Flow_0i6sgpn</bpmn:outgoing>
@@ -198,7 +193,7 @@
       <bpmn:outgoing>Flow_0mlrcb1</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics isSequential="true" camunda:collection="sideList" camunda:elementVariable="eachSide">
         <bpmn:extensionElements>
-          <zeebe:loopCharacteristics inputCollection="=sideList" />
+          <zeebe:loopCharacteristics inputCollection="=sideList" inputElement="eachSide" outputCollection="sideResults" outputElement="=sideResult" />
         </bpmn:extensionElements>
         <bpmn:loopCardinality xsi:type="bpmn:tFormalExpression">${sideList.size()}</bpmn:loopCardinality>
       </bpmn:multiInstanceLoopCharacteristics>
@@ -223,9 +218,6 @@
       <bpmn:callActivity id="MultiInstance_Side_CallActivity" name="Call assistant Chef" calledElement="AssistantChef">
         <bpmn:extensionElements>
           <zeebe:calledElement processId="AssistantChef" />
-          <zeebe:ioMapping>
-            <zeebe:input source="= eachSide" target="side" />
-          </zeebe:ioMapping>
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_1mgtry6</bpmn:incoming>
         <bpmn:outgoing>Flow_0aydxxe</bpmn:outgoing>
@@ -353,11 +345,11 @@
       <bpmn:outgoing>Flow_1svfd2z</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:subProcess id="MultiInstance_Drinks" camunda:asyncBefore="true">
-      <bpmn:incoming>Flow_09i3r5a</bpmn:incoming>
+      <bpmn:incoming>Flow_1pqrlce</bpmn:incoming>
       <bpmn:outgoing>Flow_0kerkgq</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics isSequential="true" camunda:collection="drinksList" camunda:elementVariable="drinksListStr">
         <bpmn:extensionElements>
-          <zeebe:loopCharacteristics inputCollection="=drinkList" />
+          <zeebe:loopCharacteristics inputCollection="=drinkList" inputElement="drink" />
         </bpmn:extensionElements>
         <bpmn:loopCardinality xsi:type="bpmn:tFormalExpression">${drinksList.size()}</bpmn:loopCardinality>
       </bpmn:multiInstanceLoopCharacteristics>
@@ -433,8 +425,8 @@ if(execution.hasVariable("drinksListObj")){
     <bpmn:parallelGateway id="InclusiveGateway_BeforeValidation">
       <bpmn:incoming>Flow_14wiw94</bpmn:incoming>
       <bpmn:outgoing>Flow_19yh0vy</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0ijnqt2</bpmn:outgoing>
       <bpmn:outgoing>Flow_0st7e5c</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1pqrlce</bpmn:outgoing>
     </bpmn:parallelGateway>
     <bpmn:parallelGateway id="InclusiveGateway_AfterValidation">
       <bpmn:incoming>Flow_0wtbaa7</bpmn:incoming>
@@ -451,17 +443,8 @@ if(execution.hasVariable("drinksListObj")){
       <bpmn:outgoing>Flow_18cd873</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_18cd873" sourceRef="Gateway_1dq34ww" targetRef="SubProcess_DeliverySystem" />
-    <bpmn:sequenceFlow id="Flow_0lsyvk0" sourceRef="Activity_0yozk34" targetRef="JD_side-validation" />
-    <bpmn:userTask id="Activity_0yozk34">
-      <bpmn:incoming>Flow_19yh0vy</bpmn:incoming>
-      <bpmn:outgoing>Flow_0lsyvk0</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_09i3r5a" sourceRef="Activity_00q74xq" targetRef="MultiInstance_Drinks" />
-    <bpmn:userTask id="Activity_00q74xq">
-      <bpmn:incoming>Flow_0ijnqt2</bpmn:incoming>
-      <bpmn:outgoing>Flow_09i3r5a</bpmn:outgoing>
-    </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_14wiw94" sourceRef="received-order" targetRef="InclusiveGateway_BeforeValidation" />
+    <bpmn:sequenceFlow id="Flow_1pqrlce" sourceRef="InclusiveGateway_BeforeValidation" targetRef="MultiInstance_Drinks" />
     <bpmn:textAnnotation id="TextAnnotation_0isqirg">
       <bpmn:text>Create an API which can publish a message Pick 
 1) Combo menu
@@ -513,19 +496,12 @@ if(execution.hasVariable("drinksListObj")){
   <bpmn:escalation id="Escalation_1sbf3fr" name="Escalation_No_Price" escalationCode="Escalation_No_Price" />
   <bpmn:error id="Error_1hi9rw5" name="Error_6003" errorCode="Error_6003" />
   <bpmn:error id="Error_1bv95s8" name="NoDeliveryType" errorCode="NoDeliveryType" camunda:errorMessage="NoDeliveryType" />
+  <bpmn:error id="Error_0nnhsyx" name="Placeholder_Error" errorCode="1234" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="PizzaOrderingSystem">
       <bpmndi:BPMNEdge id="Flow_14wiw94_di" bpmnElement="Flow_14wiw94">
         <di:waypoint x="238" y="450" />
         <di:waypoint x="385" y="450" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_09i3r5a_di" bpmnElement="Flow_09i3r5a">
-        <di:waypoint x="670" y="750" />
-        <di:waypoint x="890" y="750" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0lsyvk0_di" bpmnElement="Flow_0lsyvk0">
-        <di:waypoint x="650" y="450" />
-        <di:waypoint x="740" y="450" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_18cd873_di" bpmnElement="Flow_18cd873">
         <di:waypoint x="3495" y="456" />
@@ -580,11 +556,11 @@ if(execution.hasVariable("drinksListObj")){
         <di:waypoint x="1555" y="450" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_04d64ok_di" bpmnElement="Flow_04d64ok">
-        <di:waypoint x="840" y="450" />
+        <di:waypoint x="740" y="450" />
         <di:waypoint x="880" y="450" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0wtbaa7_di" bpmnElement="Flow_0wtbaa7">
-        <di:waypoint x="1468" y="218" />
+        <di:waypoint x="1448" y="218" />
         <di:waypoint x="1580" y="218" />
         <di:waypoint x="1580" y="425" />
       </bpmndi:BPMNEdge>
@@ -627,23 +603,20 @@ if(execution.hasVariable("drinksListObj")){
         <di:waypoint x="4490" y="440" />
         <di:waypoint x="4590" y="440" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ijnqt2_di" bpmnElement="Flow_0ijnqt2">
-        <di:waypoint x="410" y="475" />
-        <di:waypoint x="410" y="750" />
-        <di:waypoint x="570" y="750" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_19yh0vy_di" bpmnElement="Flow_19yh0vy">
         <di:waypoint x="435" y="450" />
-        <di:waypoint x="550" y="450" />
+        <di:waypoint x="640" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pqrlce_di" bpmnElement="Flow_1pqrlce">
+        <di:waypoint x="410" y="475" />
+        <di:waypoint x="410" y="790" />
+        <di:waypoint x="890" y="790" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_06gjiw0_di" bpmnElement="received-order">
         <dc:Bounds x="202" y="432" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="179" y="475" width="85" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0zxkfnx_di" bpmnElement="JD_side-validation">
-        <dc:Bounds x="740" y="410" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_17hp4an_di" bpmnElement="MessageThrow_payment-system">
         <dc:Bounds x="2891" y="438" width="36" height="36" />
@@ -653,6 +626,9 @@ if(execution.hasVariable("drinksListObj")){
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1vo0gkk_di" bpmnElement="OrderCompleted">
         <dc:Bounds x="4742" y="422" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zxkfnx_di" bpmnElement="JD_side-validation">
+        <dc:Bounds x="640" y="410" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0g4xxmh_di" bpmnElement="SubProcess_DeliverySystem" isExpanded="true">
         <dc:Bounds x="3630" y="260" width="860" height="350" />
@@ -736,7 +712,7 @@ if(execution.hasVariable("drinksListObj")){
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1mpwvd1" bpmnElement="MultiInstance_Pizza" isExpanded="true">
-        <dc:Bounds x="900" y="140" width="568" height="180" />
+        <dc:Bounds x="900" y="140" width="548" height="180" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_0qc5vsf" bpmnElement="Flow_0i6sgpn">
         <di:waypoint x="968" y="210" />
@@ -967,12 +943,6 @@ if(execution.hasVariable("drinksListObj")){
       <bpmndi:BPMNShape id="Gateway_168oug3_di" bpmnElement="Gateway_1dq34ww" isMarkerVisible="true">
         <dc:Bounds x="3445" y="431" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1xm1ttr_di" bpmnElement="Activity_0yozk34">
-        <dc:Bounds x="550" y="410" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1ajqhcy_di" bpmnElement="Activity_00q74xq">
-        <dc:Bounds x="570" y="710" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0isqirg_di" bpmnElement="TextAnnotation_0isqirg">
         <dc:Bounds x="185" y="200" width="170" height="120" />
         <bpmndi:BPMNLabel />
@@ -991,9 +961,6 @@ if(execution.hasVariable("drinksListObj")){
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0njo0rs_di" bpmnElement="MultiInstance_Side_TimerBoundaryEvent">
         <dc:Bounds x="1262" y="542" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1da3bt1_di" bpmnElement="MultiInstance_Pizza_TimerBoundaryEvent">
-        <dc:Bounds x="1272" y="122" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0vhtlnw_di" bpmnElement="SubProcess_DeliverySystem_Error">
         <dc:Bounds x="3757" y="592" width="36" height="36" />
@@ -1014,6 +981,9 @@ if(execution.hasVariable("drinksListObj")){
         <di:waypoint x="2610" y="1182" />
         <di:waypoint x="2700" y="1172" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1da3bt1_di" bpmnElement="MultiInstance_Pizza_TimerBoundaryEvent">
+        <dc:Bounds x="1272" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
