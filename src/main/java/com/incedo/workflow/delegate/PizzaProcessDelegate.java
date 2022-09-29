@@ -33,7 +33,7 @@ public class PizzaProcessDelegate {
     public void PizzaPrepareOrder(final ActivatedJob job) {
         log.info("This is from PizzaPrepareOrder.");
         String bKey = (String) job.getVariablesAsMap().get("bKey");
-        HashMap<String, String> pizzaObj = (HashMap<String, String>) job.getVariablesAsMap().get("inputPizza");
+        Object pizzaObj = job.getVariablesAsMap().get("inputPizza");
         Map<String, Object> pizzaName = new HashMap<>();
         pizzaName.put("pizza", pizzaObj);
         pizzaName.put("bKey", bKey);
