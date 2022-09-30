@@ -1,4 +1,4 @@
-package com.incedo.workflow.util;
+package com.incedo.workflow.delegate;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +13,7 @@ import java.util.*;
 
 @Slf4j
 @Component
-public class ValidateSideDelegate {
+public class SideProcessDelegate {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @ZeebeWorker(type = "SideValidation")
@@ -22,7 +22,7 @@ public class ValidateSideDelegate {
         });
         List<Side> validSideList = new ArrayList<>();
         for (Side side : sideList) {
-            boolean isValidPizzaOrder = Arrays.stream(SideName.values())
+            boolean isValidPizzaOrder = Arrays.stream(SideProcessDelegate.SideName.values())
                     .anyMatch(t -> t.side.equals(side.getSideName()));
             if (isValidPizzaOrder)
                 validSideList.add(side);
@@ -48,11 +48,9 @@ public class ValidateSideDelegate {
         GARLIC("Garlic"),
         WINGS("Wings");
         private final String side;
-
         SideName(final String side) {
             this.side = side;
         }
-
         @Override
         public String toString() {
             return side;

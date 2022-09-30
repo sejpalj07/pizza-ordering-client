@@ -1,5 +1,8 @@
 package com.incedo.workflow.delegate;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.incedo.workflow.exception.BPMNErrorList;
 import com.incedo.workflow.model.Pizza;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.spring.client.ZeebeClientLifecycle;
@@ -8,34 +11,50 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Slf4j
 @Component
 public class PizzaProcessDelegate {
     private ZeebeClientLifecycle client;
-    private Random random = new Random();
-    PizzaProcessDelegate(@Autowired ZeebeClientLifecycle client){
+    private final ObjectMapper mapper = new ObjectMapper();
+    PizzaProcessDelegate(@Autowired ZeebeClientLifecycle client) {
         this.client = client;
     }
     @ZeebeWorker(type = "ValidatePizza", autoComplete = true)
     public Map<String, Object> ValidatePizza(final ActivatedJob job) {
         log.info("This is from Pizza Validation.");
-        List<Pizza> pizzaList = (List<Pizza>) job.getVariablesAsMap().get("pizzaList");
-        log.info("Pizza List from Validation : " + pizzaList);
-        return Map.of("pizzaList", pizzaList);
+        List<Pizza> pizzaList = mapper.convertValue(job.getVariablesAsMap().get("pizzaList"),
+                new TypeReference<List<Pizza>>() {
+                });
+        List<Pizza> newPizzaList = new ArrayList<>();
+        for (Pizza pizza : pizzaList) {
+            String name = pizza.getPizzaName();
+            boolean isValidPizzaOrder = Arrays.stream(PizzaProcessDelegate.PizzaName.values())
+                    .anyMatch(t -> t.pizza.equals(name));
+            if (isValidPizzaOrder) {
+                newPizzaList.add(pizza);
+            } else {
+                log.error(BPMNErrorList.ERROR_ITEM_INVALID + ": InValid Pizza Item: " + pizza + "\n with Business Key: ");
+            }
+        }
+        if (newPizzaList.isEmpty()) {
+            log.error(BPMNErrorList.ERROR_EMPTY_LIST + ": PizzaList is Empty with Business key: ");
+            return (Map.of("pizzaList", null));
+        } else {
+            return (Map.of("pizzaList", newPizzaList));
+        }
     }
 
     @ZeebeWorker(type = "PizzaPrepareOrder", autoComplete = true)
     public void PizzaPrepareOrder(final ActivatedJob job) {
         log.info("This is from PizzaPrepareOrder.");
         String bKey = (String) job.getVariablesAsMap().get("bKey");
-        Object pizzaObj = job.getVariablesAsMap().get("inputPizza");
+        Pizza pizza = mapper.convertValue(job.getVariablesAsMap().get("inputPizza"),
+                new TypeReference<Pizza>() {
+        });
         Map<String, Object> pizzaName = new HashMap<>();
-        pizzaName.put("pizza", pizzaObj);
+        pizzaName.put("pizza", pizza);
         pizzaName.put("bKey", bKey);
         client.newPublishMessageCommand()
                 .messageName("Message_PizzaCreation")
@@ -48,17 +67,21 @@ public class PizzaProcessDelegate {
     @ZeebeWorker(type = "ConfirmPizza", autoComplete = true)
     public void ConfirmPizza(final ActivatedJob job) {
         log.info("This is from ConfirmPizza.");
-        Object pizza = job.getVariablesAsMap().get("pizza");
-        log.info("Confirmed Pizza: " + pizza);
+        Pizza pizza = mapper.convertValue(job.getVariablesAsMap().get("pizza"),
+                new TypeReference<Pizza>() {
+                });
+        log.info("Completed Pizza: " + pizza);
     }
 
     @ZeebeWorker(type = "BackHouse_Status", autoComplete = true)
     public void PizzaStatus(final ActivatedJob job) {
         log.info("This is from PizzaStatus.");
         String bKey = (String) job.getVariablesAsMap().get("bKey");
-        Object pizzaObj = job.getVariablesAsMap().get("pizza");
+        Pizza pizza = mapper.convertValue(job.getVariablesAsMap().get("pizza"),
+                new TypeReference<Pizza>() {
+                });
         Map<String, Object> completedPizza = new HashMap<>();
-        completedPizza.put("completedPizza", pizzaObj);
+        completedPizza.put("completedPizza", pizza);
         completedPizza.put("bKey", bKey);
         client.newPublishMessageCommand()
                 .messageName("Message_PizzaStatus")
@@ -71,8 +94,10 @@ public class PizzaProcessDelegate {
     @ZeebeWorker(type = "CheckPizzaStatusFromKitchen", autoComplete = true)
     public void CheckPizzaStatusFromKitchen(final ActivatedJob job) {
         log.info("This is from CheckPizzaStatusFromKitchen.");
-        Object pizzaObj = job.getVariablesAsMap().get("completedPizza");
-        log.info("Completed Pizza: " + pizzaObj);
+        Pizza pizza = mapper.convertValue(job.getVariablesAsMap().get("completedPizza"),
+                new TypeReference<Pizza>() {
+                });
+        log.info("Completed Pizza: " + pizza);
     }
 
     private enum PizzaName {

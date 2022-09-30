@@ -8,10 +8,7 @@
     <bpmn:sequenceFlow id="Flow_0rkhfu1" sourceRef="makepaymentMessage" targetRef="Gateway_0f1xtmu" />
     <bpmn:serviceTask id="validateAccountBalance" name="Validate Account Balance" camunda:asyncAfter="true">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="camunda-7-adapter" />
-        <zeebe:taskHeaders>
-          <zeebe:header key="delegateExpression" value="${ValidateAccountBalance}" />
-        </zeebe:taskHeaders>
+        <zeebe:taskDefinition type="ValidateAccountBalance" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0fx2jaq</bpmn:incoming>
       <bpmn:outgoing>Flow_0rhqnj3</bpmn:outgoing>
@@ -25,20 +22,14 @@
       </bpmn:startEvent>
       <bpmn:serviceTask id="DebitDelegate" name="DebitDelegate">
         <bpmn:extensionElements>
-          <zeebe:taskDefinition type="camunda-7-adapter" />
-          <zeebe:taskHeaders>
-            <zeebe:header key="delegateExpression" value="${DebitDelegate}" />
-          </zeebe:taskHeaders>
+          <zeebe:taskDefinition type="DebitDelegate" />
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_1gaqfyw</bpmn:incoming>
         <bpmn:outgoing>Flow_1mfo09y</bpmn:outgoing>
       </bpmn:serviceTask>
       <bpmn:serviceTask id="CreditDelegate" name="CreditDelegate">
         <bpmn:extensionElements>
-          <zeebe:taskDefinition type="camunda-7-adapter" />
-          <zeebe:taskHeaders>
-            <zeebe:header key="delegateExpression" value="${CreditDelegate}" />
-          </zeebe:taskHeaders>
+          <zeebe:taskDefinition type="CreditDelegate" />
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_1mfo09y</bpmn:incoming>
         <bpmn:outgoing>Flow_0w5ap2l</bpmn:outgoing>
@@ -83,10 +74,7 @@
     <bpmn:sequenceFlow id="Flow_1nfcqx7" sourceRef="onlinepay" targetRef="paymentProcessCompletionMessage" />
     <bpmn:serviceTask id="cashPayment" name="cashPayment">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="camunda-7-adapter" />
-        <zeebe:taskHeaders>
-          <zeebe:header key="delegateExpression" value="${CashPayment}" />
-        </zeebe:taskHeaders>
+        <zeebe:taskDefinition type="CashPayment" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0uyu6ql</bpmn:incoming>
       <bpmn:incoming>Flow_01cfl7k</bpmn:incoming>
@@ -94,10 +82,7 @@
     </bpmn:serviceTask>
     <bpmn:serviceTask id="onlinepay" name="onlinepay">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="camunda-7-adapter" />
-        <zeebe:taskHeaders>
-          <zeebe:header key="delegateExpression" value="${OnlinePayment}" />
-        </zeebe:taskHeaders>
+        <zeebe:taskDefinition type="OnlinePayment" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1oyd5bm</bpmn:incoming>
       <bpmn:outgoing>Flow_1nfcqx7</bpmn:outgoing>
