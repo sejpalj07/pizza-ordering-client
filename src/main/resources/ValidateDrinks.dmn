@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1rwv1y3" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.2.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
+  <decision id="ValidateDrinksDecision" name="Validate Drinks Decision">
+    <decisionTable id="decisionTable_1" hitPolicy="FIRST">
+      <input id="input_1" label="drinksListStr">
+        <inputExpression id="inputExpression_1" typeRef="string" expressionLanguage="groovy">
+          <text>drinksListStr.toString().replaceAll("\\s", "")</text>
+        </inputExpression>
+      </input>
+      <output id="output_1" label="isValid" name="isValid" typeRef="boolean" />
+      <rule id="DecisionRule_018zbae">
+        <inputEntry id="UnaryTests_1iknclf">
+          <text>"Soda"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0k9a67z">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0teu9p8">
+        <inputEntry id="UnaryTests_14wm56r">
+          <text>"IcedTea"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0s37l4l">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1jqvulg">
+        <inputEntry id="UnaryTests_1mpewe2">
+          <text>"Water"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0fxw2zl">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_117r8uk">
+        <inputEntry id="UnaryTests_0v84u04">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_045gdru">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_1k3nn4x">
+      <dmndi:DMNShape id="DMNShape_0urw2jb" dmnElementRef="ValidateDrinksDecision">
+        <dc:Bounds height="80" width="180" x="150" y="80" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
